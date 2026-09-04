@@ -1,0 +1,31 @@
+project: hh-goa-2026-task3
+goal: face-search-blockchain-verification
+language: python
+python: ">=3.11"
+ui: streamlit
+face_engine: insightface
+vector_math: numpy
+http: httpx
+blockchain_client: web3.py
+contract: solidity
+recommended_testnet: polygon-amoy
+modes:
+  - LIVE
+  - LOCAL_TEST_MODE
+mandatory:
+  - face_detection
+  - face_embedding
+  - genuine_search
+  - independent_candidate_face_verification
+  - evidence_manifest
+  - sha256_fingerprint
+  - blockchain_registration
+  - blockchain_readback
+  - tamper_detection
+forbidden:
+  - hardcoded_final_result
+  - private_account_access
+  - access_control_bypass
+  - captcha_bypass
+  - secrets_in_repository
+  - raw_face_embedding_on_chain
