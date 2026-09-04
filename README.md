@@ -2,10 +2,10 @@
 
 This repository implements the end-to-end pipeline for Face Scan -> Genuine Web/Reverse-Image Search -> Candidate Matching -> Blockchain Verification.
 
-## Phase 1 Status
-**Phase 1 (Repository Foundation & Face Identification Engine) is COMPLETE.**
-- Stage 2 (Reverse Image Search) is **NOT implemented yet**.
-- Stage 3 (Blockchain Verification) is **NOT implemented yet**.
+## Phase Status
+- **Phase 1: Face engine implemented.** (Complete)
+- **Phase 2: Search POC implemented.** (Complete)
+- **Phase 3: Blockchain verification not yet implemented.**
 
 ## Installation
 
@@ -31,14 +31,25 @@ Default configuration includes:
 - `MAX_IMAGE_SIZE`: `10485760` (10 MB)
 - `REQUEST_TIMEOUT`: `30`
 
-## Face Engine Overview
-The Face Engine (`src/face.py`) abstracts the underlying InsightFace model (`buffalo_l`). It accepts raw image bytes, decodes them safely with OpenCV, and generates a normalized ArcFace embedding vector. It validates empty inputs, limits max image size, and strictly mandates a single face policy.
+#### Provider Configuration
+- `PIPELINE_MODE`: Controls execution type (`local` or `live`).
+- `SEARCH_PROVIDER`: Set to `google_vision` for live mode.
+- `GOOGLE_API_KEY`: Required when using `GoogleVisionProvider` in live mode.
 
-### CPU Execution
-The engine is configured to use the `CPUExecutionProvider` by default for maximum compatibility across developer machines without requiring CUDA or GPUs.
+## Running the Search POC
+The Search POC integrates external providers and matches dynamically fetched candidate images against the origin face embedding.
+
+### LIVE mode
+Set `PIPELINE_MODE=live` and configure `SEARCH_PROVIDER=google_vision` along with your `GOOGLE_API_KEY`. The system will upload your image via base64 encoded payload to Google Cloud Vision's `WEB_DETECTION` engine, parse the candidate pages and images, and evaluate the similarity securely on your local CPU.
+
+### LOCAL mode
+Set `PIPELINE_MODE=local`. The system skips external network search calls and relies on a `MockSearchProvider` returning local test candidate fixtures. Note: LOCAL MODE MUST NEVER BE PRESENTED AS LIVE SEARCH.
+
+## Face Engine Overview
+The Face Engine (`src/face.py`) abstracts the underlying InsightFace model (`buffalo_l`). It uses the `CPUExecutionProvider` by default.
 
 ### Testing Commands
-Run the unit tests:
+Run the unit tests (works completely offline):
 ```bash
 pytest -q
 ```
@@ -48,9 +59,11 @@ python -m compileall src
 ruff check .
 ```
 
-## Known Limitations
-- **Model Downloads**: The InsightFace model weights (`buffalo_l.zip`) are downloaded dynamically to `~/.insightface/models/` upon the first initialization if not found locally.
-- **Thresholds**: The `FACE_MATCH_THRESHOLD=0.45` is an experimental threshold used for candidate matching, not a legally binding identity verification claim.
+## Known Limitations & Privacy Implications
+- **Model Downloads**: InsightFace model weights (`buffalo_l.zip`) download dynamically on the first initialization.
+- **Image Transmission**: In LIVE mode, your query image bytes are base64 encoded and transmitted to the external configured provider (e.g., Google Cloud).
+- **Candidate Storage**: Extracted face embeddings and downloaded candidate images are kept only in memory and never written to disk or logs.
+- **Provider Limitations**: Google Vision web detection finds indexed public domains. Direct private social network scraping is not actively engaged without authenticated tokens for those specific properties.
 
 ## Licensing Note
-**Important:** InsightFace package source code is under MIT license, but the pretrained models (such as `buffalo_l` and ArcFace weights) have non-commercial or research-use restrictions depending on their original datasets. Do not assume the model weights are free for unrestricted commercial use.
+InsightFace package source code is MIT licensed, but pretrained models (`buffalo_l`) have non-commercial or research-use restrictions based on their original datasets.
