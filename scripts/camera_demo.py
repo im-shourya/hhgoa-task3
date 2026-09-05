@@ -12,7 +12,6 @@ import logging
 import sys
 
 import cv2
-import numpy as np
 
 from src.config import get_settings
 from src.face.engine import FaceEngine

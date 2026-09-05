@@ -25,18 +25,15 @@ import argparse
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
 
 import cv2
 import numpy as np
 
-from src.config import get_settings, Settings
+from src.config import get_settings
 from src.face.engine import FaceEngine
-from src.search import SearchProviderFactory, SearchProviderType
 from src.verification import (
     VerificationPipeline,
     VerificationResult,
-    create_pipeline,
 )
 from src.errors import (
     NoFaceDetectedError,
@@ -93,23 +90,23 @@ def print_verification_result(result: VerificationResult, mode: str) -> None:
     print(f"PHASE 3 CANDIDATE VERIFICATION — {mode.upper()} MODE")
     print("=" * 60)
     
-    print(f"\nInput:")
+    print("\nInput:")
     print(f"    Query embedding dimension: {result.query_embedding.dimension}")
     print(f"    Query embedding normalized: {result.query_embedding.normalized}")
     
-    print(f"\nSearch provider:")
+    print("\nSearch provider:")
     print(f"    {result.search_result.provider.value}")
     
-    print(f"\nSearch results:")
+    print("\nSearch results:")
     print(f"    Total results: {result.search_result.total_results}")
     print(f"    Candidates retrieved: {result.search_result.count}")
     
-    print(f"\nCandidate evaluation:")
+    print("\nCandidate evaluation:")
     print(f"    Candidates evaluated: {result.evaluated_candidates}")
     print(f"    Candidates with matches: {result.matched_candidates}")
     print(f"    Total candidates processed: {result.total_candidates}")
     
-    print(f"\nRanked candidates:")
+    print("\nRanked candidates:")
     print("-" * 60)
     for rc in result.ranking_result.ranked:
         status_symbol = {
@@ -132,7 +129,7 @@ def print_verification_result(result: VerificationResult, mode: str) -> None:
     
     print("-" * 60)
     
-    print(f"\nFinal Result:")
+    print("\nFinal Result:")
     print(f"    Verification Status: {result.verification_status}")
     
     if result.best_candidate:
@@ -292,6 +289,5 @@ def main():
 
 if __name__ == "__main__":
     # Import here to avoid circular import
-    from src.face.models import FaceEmbedding
     
     sys.exit(main())
