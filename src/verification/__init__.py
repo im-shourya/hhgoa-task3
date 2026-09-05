@@ -2,6 +2,7 @@ from .retriever import CandidateImageRetriever, create_retriever
 from .evaluator import CandidateEvaluator, CandidateMatch, EvaluationStatus
 from .ranking import CandidateRanker, RankedCandidate, RankingResult, create_ranker
 from .pipeline import VerificationPipeline, VerificationResult, create_pipeline
+from .reverify import EvidenceReverificationService, ReverificationStatus, ReverificationResult
 
 __all__ = [
     "CandidateImageRetriever",
@@ -16,4 +17,7 @@ __all__ = [
     "VerificationPipeline",
     "VerificationResult",
     "create_pipeline",
+    "EvidenceReverificationService",
+    "ReverificationStatus",
+    "ReverificationResult",
 ]

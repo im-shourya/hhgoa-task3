@@ -2,7 +2,6 @@ from __future__ import annotations
 import logging
 import ipaddress
 from urllib.parse import urlparse
-from typing import Optional
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry

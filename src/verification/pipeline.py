@@ -6,15 +6,12 @@ from typing import Optional
 from ..config import get_settings
 from ..face.engine import FaceEngine
 from ..face.models import FaceEmbedding
-from ..search import SearchProvider, SearchProviderFactory, SearchResult, SearchCandidate
+from ..search import SearchProvider, SearchProviderFactory, SearchResult
 from ..errors import (
-    NoFaceDetectedError,
-    MultipleFacesError,
     NoEvaluatableCandidatesError,
-    NoMatchError,
 )
 from .retriever import CandidateImageRetriever, create_retriever
-from .evaluator import CandidateEvaluator, CandidateMatch, EvaluationStatus
+from .evaluator import CandidateEvaluator
 from .ranking import CandidateRanker, RankingResult, RankedCandidate
 
 logger = logging.getLogger(__name__)

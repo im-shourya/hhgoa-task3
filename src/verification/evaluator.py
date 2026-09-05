@@ -9,10 +9,8 @@ from ..face.engine import FaceEngine
 from ..face.models import FaceEmbedding
 from ..search.models import SearchCandidate
 from ..errors import (
-    CandidateError,
     CandidateNoFaceError,
     CandidateMultipleFacesError,
-    CandidateEmbeddingError,
 )
 from .retriever import CandidateImageRetriever, create_retriever
 
