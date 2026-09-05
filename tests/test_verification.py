@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import numpy as np
 
 from src.config import Settings
@@ -8,8 +8,8 @@ from src.face.engine import FaceEngine
 from src.search.models import SearchCandidate, SearchProviderType
 from src.verification.retriever import CandidateImageRetriever
 from src.verification.evaluator import CandidateEvaluator, CandidateMatch, EvaluationStatus
-from src.verification.ranking import CandidateRanker, RankedCandidate, RankingResult
-from src.verification.pipeline import VerificationPipeline, VerificationResult
+from src.verification.ranking import CandidateRanker
+from src.verification.pipeline import VerificationPipeline
 from src.errors import (
     InvalidCandidateURLError,
     SSRFProtectionError,
@@ -19,7 +19,6 @@ from src.errors import (
     CandidateNoFaceError,
     CandidateMultipleFacesError,
     NoEvaluatableCandidatesError,
-    NoMatchError,
 )
 
 

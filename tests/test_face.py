@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import insightface.app
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 from src.face.models import FaceEmbedding, DetectedFace, FaceDetectionResult
 from src.face.engine import FaceEngine
@@ -9,7 +9,6 @@ from src.errors import (
     InvalidImageError,
     NoFaceDetectedError,
     MultipleFacesError,
-    EmbeddingError,
     ComparisonError,
 )
 
@@ -91,7 +90,6 @@ class TestFaceEngine:
         engine._initialize()
         assert engine._initialized is True
         # FaceAnalysis is called during initialization
-        import insightface.app
         insightface.app.FaceAnalysis.assert_called_once()
         mock_insightface.prepare.assert_called_once()
     
