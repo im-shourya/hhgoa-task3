@@ -1,0 +1,12 @@
+ insightface
+onnxruntime
+opencv-python
+pillow
+numpy
+requests
+beautifulsoup4
+imagehash
+web3
+python-dotenv
+streamlit
+pytest
