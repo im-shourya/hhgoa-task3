@@ -52,11 +52,16 @@ MATCH / NO_MATCH
 - **Face comparison** using cosine similarity
 - **Configuration**: Model, detection threshold, match threshold
 
-#### Phase 2: Search (`src/search/`)
-- **SearchProvider** abstraction
-- **MockSearchProvider** for testing
-- **SearchCandidate** model with provenance
-- Extensible for DuckDuckGo, Google, Bing
+#### Phase 2 — Google Cloud Vision Web Detection
+**Status**: COMPLETE
+- **Google Vision** = web discovery
+- **InsightFace** = independent face verification
+- **SHA-256** = evidence fingerprint
+- **Polygon Amoy** = blockchain anchoring
+
+The search integration relies entirely on Google Cloud Vision's `WEB_DETECTION` feature to discover web footprints and reverse image references. It does not evaluate identities, it exclusively fetches candidate domains/images which are then piped into InsightFace for strict local biometric face verification.
+- **Provider**: `google_vision`
+- **Configuration**: Set `SEARCH_PROVIDER=google_vision` and `SEARCH_API_KEY=<Google Cloud Vision API key>` in `.env`.
 
 #### Phase 3: Verification (`src/verification/`)
 - **CandidateImageRetriever**: Secure image download with SSRF protection
