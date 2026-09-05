@@ -11,6 +11,7 @@ class SearchProviderType(str, Enum):
     DUCKDUCKGO = "duckduckgo"
     GOOGLE = "google"
     BING = "bing"
+    GOOGLE_VISION = "google_vision"
 
 
 @dataclass(frozen=True)
