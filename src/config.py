@@ -31,9 +31,13 @@ class Settings(BaseSettings):
     retrieval_blocked_private_ranges: bool = Field(default=True, description="Block private IP ranges")
     
     # Search Provider Configuration
-    search_provider: str = Field(default="mock", description="Search provider: mock, duckduckgo, google_vision")
+    search_provider: str = Field(default="mock", description="Search provider: mock, duckduckgo, google_vision, google_lens")
     search_max_results: int = Field(default=10, description="Maximum search results to process")
     search_api_key: Optional[str] = Field(default=None, description="Google Cloud Vision API key")
+    
+    # Google Lens Provider Configuration
+    google_lens_timeout: int = Field(default=30000, description="Timeout for Google Lens operations in milliseconds")
+    google_lens_headless: bool = Field(default=True, description="Run Google Lens automation headlessly")
     
     # Blockchain Configuration
     blockchain_enabled: bool = Field(default=False, description="Enable blockchain anchoring")
