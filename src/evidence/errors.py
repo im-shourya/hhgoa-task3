@@ -1,6 +1,6 @@
-from src.errors import AppError
 
-class EvidenceError(AppError):
+
+class EvidenceError(Exception):
     pass
 
 class EvidenceCanonicalizationError(EvidenceError):

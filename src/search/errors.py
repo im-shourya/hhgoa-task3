@@ -1,6 +1,4 @@
-from src.errors import AppError
-
-class SearchProviderError(AppError):
+class SearchProviderError(Exception):
     pass
 
 class SearchAuthenticationError(SearchProviderError):
@@ -15,11 +13,11 @@ class SearchTimeoutError(SearchProviderError):
 class SearchResponseError(SearchProviderError):
     pass
 
-class CandidateRetrievalError(AppError):
+class CandidateRetrievalError(Exception):
     pass
 
-class CandidateImageError(AppError):
+class CandidateImageError(Exception):
     pass
 
-class CandidateEvaluationError(AppError):
+class CandidateEvaluationError(Exception):
     pass

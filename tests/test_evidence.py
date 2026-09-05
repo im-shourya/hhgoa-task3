@@ -1,6 +1,7 @@
 import pytest
 import hashlib
-from src.search.models import CandidateMatch, SearchCandidate
+from src.search.models import SearchCandidate
+from src.verification.evaluator import CandidateMatch, EvaluationStatus
 from src.evidence.models import EvidenceManifest, EvidenceCandidate, EvidenceVerification, EvidenceProvenance
 from src.evidence.canonical import canonicalize_evidence
 from src.evidence.hasher import hash_evidence, verify_evidence_hash
@@ -9,18 +10,16 @@ from src.evidence.errors import EvidenceVerificationError
 @pytest.fixture
 def sample_match():
     candidate = SearchCandidate(
-        url="https://example.com/post123",
+        page_url="https://example.com/post123",
         image_url="https://example.com/img123.jpg",
         title="Found Person",
-        source_domain="example.com",
-        provider="google_vision",
-        metadata={"id": "vision_99"}
+        provider_result_id="vision_99",
+        provider="google_vision"
     )
     return CandidateMatch(
         candidate=candidate,
         similarity=0.8734219,
-        face_detected=True,
-        status="MATCH"
+        status=EvaluationStatus.MATCH
     )
 
 def test_evidence_manifest_creation(sample_match):
@@ -33,7 +32,7 @@ def test_evidence_manifest_creation(sample_match):
     assert evidence.verification.similarity == "0.873422" # Rounded due to .6f formatting
     assert evidence.verification.decision == "MATCH"
     assert evidence.provenance.provider == "google_vision"
-    assert evidence.provenance.metadata["id"] == "vision_99"
+    assert evidence.provenance.metadata["provider_result_id"] == "vision_99"
     
 def test_canonicalization_deterministic(sample_match):
     evidence1 = EvidenceManifest.from_candidate_match(sample_match)
@@ -75,8 +74,8 @@ def test_modified_evidence_different_hash(sample_match):
     ev1 = EvidenceManifest.from_candidate_match(sample_match)
     hash1 = hash_evidence(ev1)
     
-    # Modify similarity
-    sample_match.similarity = 0.999999
+    import dataclasses
+    sample_match = dataclasses.replace(sample_match, similarity=0.999999)
     ev2 = EvidenceManifest.from_candidate_match(sample_match)
     hash2 = hash_evidence(ev2)
     

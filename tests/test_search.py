@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 
 from src.search.models import SearchCandidate, SearchResult, SearchProviderType
-from src.search.providers import MockSearchProvider, SearchProviderFactory
+from src.search import MockSearchProvider, SearchProviderFactory
 from src.errors import SearchError
 
 

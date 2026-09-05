@@ -38,6 +38,15 @@ class Settings(BaseSettings):
     search_api_key: Optional[str] = Field(default=None, description="API key for search provider")
     search_cx: Optional[str] = Field(default=None, description="Custom search engine ID for Google")
     
+    # Blockchain Configuration
+    blockchain_enabled: bool = Field(default=False, description="Enable blockchain anchoring")
+    blockchain_network: str = Field(default="polygon_amoy", description="Blockchain network name")
+    blockchain_rpc_url: Optional[str] = Field(default=None, description="RPC URL for the network")
+    blockchain_chain_id: int = Field(default=80002, description="Chain ID (80002 for Polygon Amoy)")
+    blockchain_private_key: Optional[str] = Field(default=None, description="Private key for transactions")
+    blockchain_contract_address: Optional[str] = Field(default=None, description="EvidenceRegistry contract address")
+    blockchain_tx_timeout: int = Field(default=120, description="Transaction timeout in seconds")
+
     # General
     log_level: str = Field(default="INFO", description="Logging level")
     env_file: str = Field(default=".env", description="Environment file path")

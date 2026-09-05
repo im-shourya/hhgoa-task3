@@ -5,7 +5,10 @@ import subprocess
 def main():
     print("Compiling EvidenceRegistry.sol via solcjs...")
     
-    build_dir = os.path.join(os.path.dirname(__file__), "..", "build")
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    build_dir = os.path.join(project_root, "build")
+    contracts_dir = os.path.join(project_root, "contracts")
+    node_modules_dir = os.path.join(project_root, "node_modules")
     
     os.makedirs(build_dir, exist_ok=True)
     
@@ -15,12 +18,13 @@ def main():
             [
                 "npx", "solcjs",
                 "--bin", "--abi",
-                "--include-path", "node_modules/",
-                "--base-path", ".",
-                "-o", "build",
-                os.path.join("contracts", "EvidenceRegistry.sol")
+                "--include-path", node_modules_dir,
+                "--base-path", project_root,
+                "-o", build_dir,
+                os.path.join(contracts_dir, "EvidenceRegistry.sol")
             ],
-            check=True
+            check=True,
+            cwd=project_root
         )
     except subprocess.CalledProcessError as e:
         print(f"Compilation failed: {e}")

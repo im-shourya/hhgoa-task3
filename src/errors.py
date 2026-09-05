@@ -104,3 +104,15 @@ class NoEvaluatableCandidatesError(EvaluationError):
 class NoMatchError(EvaluationError):
     """Raised when no candidate meets the match threshold."""
     pass
+
+class BlockchainError(Exception):
+    """Base exception for blockchain errors."""
+    pass
+
+class BlockchainNetworkError(BlockchainError):
+    """Raised when there is an issue with the blockchain network."""
+    pass
+
+class BlockchainTransactionError(BlockchainError):
+    """Raised when a blockchain transaction fails."""
+    pass

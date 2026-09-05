@@ -1,5 +1,5 @@
 from .models import SearchCandidate, SearchResult, SearchProviderType
-from .providers import SearchProvider, SearchProviderFactory, MockSearchProvider
+from .base import SearchProvider, SearchProviderFactory, MockSearchProvider
 
 __all__ = [
     "SearchCandidate",

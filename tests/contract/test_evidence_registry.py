@@ -101,3 +101,25 @@ def test_unregistered_evidence(evidence_registry):
     ex, ts, sub = evidence_registry.functions.getEvidence(fingerprint).call()
     assert ex is False
     assert ts == 0
+
+def test_event_emission(evidence_registry, w3):
+    dummy_hex = "e7f8" * 16
+    fingerprint = bytes.fromhex(dummy_hex)
+    
+    tx_hash = evidence_registry.functions.registerEvidence(fingerprint).transact()
+    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+    
+    # Extract the event using the contract ABI
+    logs = evidence_registry.events.EvidenceRegistered().process_receipt(tx_receipt)
+    
+    assert len(logs) == 1
+    event = logs[0]
+    
+    # Verify event arguments
+    assert event.args.fingerprint == fingerprint
+    assert event.args.submitter == w3.eth.default_account
+    assert event.args.timestamp > 0
+    
+    # Ensure the timestamp in the event perfectly matches the stored timestamp
+    _, stored_timestamp, _ = evidence_registry.functions.getEvidence(fingerprint).call()
+    assert event.args.timestamp == stored_timestamp

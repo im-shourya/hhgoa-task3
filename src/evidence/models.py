@@ -1,6 +1,7 @@
+from urllib.parse import urlparse
 from dataclasses import dataclass, field
 from typing import Optional, Dict, Any
-from src.search.models import CandidateMatch
+from src.verification.evaluator import CandidateMatch
 
 @dataclass(frozen=True)
 class EvidenceCandidate:
@@ -36,9 +37,9 @@ class EvidenceManifest:
         return cls(
             schema_version="1.0",
             candidate=EvidenceCandidate(
-                page_url=match.candidate.url,
+                page_url=match.candidate.page_url,
                 image_url=match.candidate.image_url,
-                domain=match.candidate.source_domain,
+                domain=urlparse(match.candidate.page_url).netloc,
                 title=match.candidate.title,
             ),
             verification=EvidenceVerification(
@@ -49,6 +50,6 @@ class EvidenceManifest:
                 provider=match.candidate.provider,
                 # Filter metadata to keep only deterministic scalar/primitive types if needed, 
                 # but dicts in our implementation are simple
-                metadata=match.candidate.metadata.copy() if match.candidate.metadata else {}
+                metadata={"provider_result_id": match.candidate.provider_result_id}
             )
         )
