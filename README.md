@@ -2,7 +2,13 @@
 
 ## Phase 3 — Candidate Verification
 
-This implementation provides the complete candidate verification pipeline for Phase 3.
+## Phase Status
+- **Phase 1: Face engine implemented.** (Complete)
+- **Phase 2: Search POC implemented.** (Complete)
+- **Phase 3: Candidate Verification implemented.** (Complete)
+- **Phase 4: Evidence Hashing implemented.** (Complete)
+- **Phase 5: Smart Contract implemented.** (Complete)
+- **Phase 6: Blockchain Integration not yet implemented.**
 
 ### Architecture Overview
 
@@ -78,6 +84,60 @@ pip install -r requirements-dev.txt
 
 #### Run Tests
 
+## Running the Search & Candidate Verification POC (Phase 2 & 3)
+The system integrates external providers and matches dynamically fetched candidate images against the origin face embedding. It validates URLs, downloads candidates sequentially, verifies faces via ArcFace, and ranks them deterministically.
+
+### LIVE mode
+Set `PIPELINE_MODE=live` and configure `SEARCH_PROVIDER=google_vision` along with your `GOOGLE_API_KEY`. The system will upload your image via base64 encoded payload to Google Cloud Vision's `WEB_DETECTION` engine, parse the candidate pages and images, and evaluate the similarity securely on your local CPU.
+
+### LOCAL mode
+Set `PIPELINE_MODE=local`. The system skips external network search calls and relies on a `MockSearchProvider` returning local test candidate fixtures. Note: LOCAL MODE MUST NEVER BE PRESENTED AS LIVE SEARCH.
+
+### Live Demonstration
+To run the full end-to-end evaluation pipeline, use the smoke test script:
+```bash
+PIPELINE_MODE=local python scripts/search_smoke_test.py <path_to_image>
+```
+
+## Phase 4 — Evidence
+Phase 4 produces a deterministic cryptographic evidence hash of verified candidates (`CandidateMatch`). It extracts an `EvidenceManifest` from the Phase 3 output. 
+
+### Privacy & Determinism
+- **No biometrics**: The Evidence Manifest deliberately excludes original face images or ArcFace embedding vectors.
+- **Canonical JSON**: Manifests are flattened into deterministic JSON (sorted keys, compact separators, UTF-8 encoded).
+- **Float representation**: Similarity values are fixed to `6` precision floating strings (`0.873421`) for total cross-platform parity.
+- **SHA-256**: The canonical bytes are hashed to a robust 64-character hexadecimal SHA-256 fingerprint, primed for blockchain insertion.
+- Note: Blockchain anchoring itself is **NOT** part of Phase 4 and is deferred to Phase 5.
+
+### Running Evidence Demonstration
+```bash
+python scripts/evidence_demo.py
+```
+
+## Phase 5 — Smart Contract
+Phase 5 introduces the `EvidenceRegistry` Solidity smart contract. The contract operates strictly on the 32-byte SHA-256 evidence fingerprint (`bytes32`) produced during Phase 4.
+
+### Design Principles
+- **No Biometrics or Strings On-Chain**: To preserve privacy and massively reduce gas overhead, only the cryptographic 32-byte digest is anchored to the contract.
+- **Immutability**: Overwriting an already registered fingerprint is strictly blocked (`EvidenceAlreadyExists` custom error).
+- **Zero-Value Defenses**: Prevents anchoring dummy `bytes32(0)` hashes. 
+
+### Compilation
+Ensure you've run `npm install solc@0.8.20`. 
+Compile the contract (outputs ABI/BIN into `build/`):
+```bash
+python scripts/compile_contract.py
+```
+
+### Testing
+To test the smart contract locally via the Python testing architecture:
+```bash
+pytest -q tests/contract/test_evidence_registry.py
+```
+The Face Engine (`src/face.py`) abstracts the underlying InsightFace model (`buffalo_l`). It uses the `CPUExecutionProvider` by default.
+
+### Testing Commands
+Run the unit tests (works completely offline):
 ```bash
 pytest -q
 ```
