@@ -1,13 +1,9 @@
 import pytest
-import os
-import json
 from unittest.mock import patch, MagicMock
-from web3 import Web3
 
 from src.blockchain.client import BlockchainClient
 from src.blockchain.registry import EvidenceRegistryClient
-from src.blockchain.models import BlockchainTransactionResult
-from src.errors import BlockchainError, BlockchainTransactionError, BlockchainNetworkError
+from src.errors import BlockchainError, BlockchainNetworkError
 
 # Use fixtures from tests.contract.conftest if possible, or create a mock w3 setup
 def test_blockchain_client_initialization_fails_without_url():
@@ -54,35 +50,6 @@ def test_registry_client_requires_address():
             mock_settings.return_value = settings_mock
             
             EvidenceRegistryClient(client=mock_client)
-
-@pytest.fixture(scope="module")
-def w3():
-    from eth_tester import EthereumTester
-    from web3 import Web3
-    from web3.providers.eth_tester import EthereumTesterProvider
-    tester = EthereumTester()
-    provider = EthereumTesterProvider(tester)
-    web3_instance = Web3(provider)
-    web3_instance.eth.default_account = web3_instance.eth.accounts[0]
-    return web3_instance
-
-@pytest.fixture(scope="module")
-def evidence_registry(w3):
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-    abi_path = os.path.join(project_root, "build", "contracts_EvidenceRegistry_sol_EvidenceRegistry.abi")
-    bin_path = os.path.join(project_root, "build", "contracts_EvidenceRegistry_sol_EvidenceRegistry.bin")
-    
-    with open(abi_path, "r") as f:
-        abi = json.load(f)
-    with open(bin_path, "r") as f:
-        bytecode = f.read().strip()
-        
-    contract_factory = w3.eth.contract(abi=abi, bytecode=bytecode)
-    tx_hash = contract_factory.constructor().transact()
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    
-    contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
-    return contract
 
 def test_evidence_registry_end_to_end(w3, evidence_registry):
     # We can use the real tester w3 and deployed contract!

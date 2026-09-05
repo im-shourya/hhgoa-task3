@@ -1,43 +1,4 @@
 import pytest
-import os
-import json
-from web3 import Web3
-from web3.providers.eth_tester import EthereumTesterProvider
-
-@pytest.fixture(scope="module")
-def w3():
-    return Web3(EthereumTesterProvider())
-
-@pytest.fixture(scope="module")
-def contract_interface():
-    build_dir = os.path.join(os.path.dirname(__file__), "..", "..", "build")
-    abi_path = os.path.join(build_dir, "contracts_EvidenceRegistry_sol_EvidenceRegistry.abi")
-    bin_path = os.path.join(build_dir, "contracts_EvidenceRegistry_sol_EvidenceRegistry.bin")
-    
-    if not os.path.exists(abi_path) or not os.path.exists(bin_path):
-        pytest.skip("Contract build files not found. Run compile_contract.py first.")
-        
-    with open(abi_path, "r") as f:
-        abi = json.load(f)
-    with open(bin_path, "r") as f:
-        bytecode = f.read().strip()
-        
-    return abi, bytecode
-
-@pytest.fixture
-def evidence_registry(w3, contract_interface):
-    abi, bytecode = contract_interface
-    # Get the testing accounts
-    w3.eth.default_account = w3.eth.accounts[0]
-    
-    EvidenceRegistry = w3.eth.contract(abi=abi, bytecode=bytecode)
-    tx_hash = EvidenceRegistry.constructor().transact()
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    
-    return w3.eth.contract(
-        address=tx_receipt.contractAddress,
-        abi=abi
-    )
 
 def test_deploy(evidence_registry):
     assert evidence_registry.address is not None

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from ..config import get_settings
-from ..errors import SearchError, SearchProviderError, NoResultsError
+from ..errors import SearchError
 from .models import SearchCandidate, SearchResult, SearchProviderType
 
 

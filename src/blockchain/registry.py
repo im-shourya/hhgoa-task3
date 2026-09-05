@@ -1,7 +1,6 @@
 import os
 import json
 import logging
-from web3 import Web3
 from web3.exceptions import ContractLogicError, TimeExhausted
 
 from src.config import get_settings
